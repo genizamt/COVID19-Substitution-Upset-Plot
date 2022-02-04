@@ -1,5 +1,5 @@
 ---
-title: "BA SUBFAMILY Upset plot"
+title: "COVID-19 Upset plot"
 output: 
   html_document:
     theme: yeti
@@ -31,6 +31,8 @@ library(tidyverse)
 
 ***
 
+# import data and create dataframe
+
 ```{r loading input data & setup upset, echo=FALSE, results='hide'}
 setwd("~/Desktop/BAsubfam/")
 # make a list of input files to be read
@@ -53,7 +55,7 @@ res1<-as.data.frame(res1)
 res1$name=rownames(res1)
 ```
 
-#name columns
+# rearranging name columns
 
 ```{r} 
 # rearrange columns
@@ -73,13 +75,12 @@ names(res2) <- c("name",
  #"inAY3Substitution75.upset.txt", "inAY44Substitution75.upset.txt",  "inAY4dot2Substitution75.upset.txt",  #"inAY4Substitution75.upset.txt",  "inAY5Substitution75.upset.txt","inAY6Substitution75.upset.txt",  
   #"inAY9Substitution75.upset.txt", "inDeltaSubstitution75.upset.txt"   ) 
 
-#res2=res1[,c(ncol(res1),1:(ncol(res1)-1))]
-#names(res2) <- c("name", "inAY10Substitution75", "inAY11Substitution75", "inAY12Substitution75", "inAY13Substitution75", "inAY14Substitution75", "inAY15Substitution75", "inAY1Substitution75", "inAY20Substitution75", "inAY23Substitution75", "inAY24Substitution75", "inAY25Substitution75", "inAY26Substitution75", "inAY27Substitution75", "inAY2Substitution75", "inAY3dot1Substitution75","inAY3Substitution75", "inAY4Substitution75", "inAY5Substitution75", "inAY6Substitution75", "inAY7dot1Substitution75", "inAY9Substitution75", "inDeltaSubstitution75") 
 ```
+# generate upset plot
 
 ```{r upset plot, fig.align='center', echo=FALSE, out.width="100%" }
 #pdf("gene_intersections.pdf")
-#make the plot with 10 sets
+#make the plot sets
 upset(res2,sets = c( "inBA1Substitution75.upset.txt"  ,  "inBA11Substitution75.upset.txt"))
 
 #upset(res2,sets = c(  "inAY10Substitution75.upset.txt"   , "inAY11Substitution75.upset.txt"  , 
@@ -94,6 +95,7 @@ upset(res2,sets = c( "inBA1Substitution75.upset.txt"  ,  "inBA11Substitution75.u
  #"inAY5Substitution75.upset.txt" ,    "inAY6Substitution75.upset.txt"  ,  
   #"inAY9Substitution75.upset.txt" ,   
  #"inDeltaSubstitution75.upset.txt"   ))
+ 
 #write out matrix to csv
 write_excel_csv(res2, "~/Desktop/BAsubfam/ba-matrix-013122.csv")
 #dev.off()
