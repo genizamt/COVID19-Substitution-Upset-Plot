@@ -1,0 +1,104 @@
+---
+title: "BA SUBFAMILY Upset plot"
+output: 
+  html_document:
+    theme: yeti
+    highlight: monochrome
+    fig.align: 'center'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, verbose = FALSE, warning=FALSE, message=FALSE)
+options(knitr.table.format = "html")
+```
+
+# Introduction
+
+
+***
+
+```{r loading libraries & input data, echo=FALSE, results='hide'}
+library(ggplot2)
+library(plotly)
+library(plyr); library(dplyr)
+library(reshape2)
+library(UpSetR)
+library(readr)
+library(tidyverse)
+
+
+```
+
+***
+
+```{r loading input data & setup upset, echo=FALSE, results='hide'}
+setwd("~/Desktop/BAsubfam/")
+# make a list of input files to be read
+filelist = list.files(pattern = "*upset.txt")
+filelist
+# make a 3 column table of listname,gene,1
+res<-lapply(filelist, function(x){
+ data.frame(
+  set=x,
+  geneID=as.character(read.table(x)[,1]),
+  val=1)
+})
+res<-ldply(res)
+# turn the 3 column long table into a wide
+res1<-acast(res,geneID~set,value.var="val",fill=0) 
+# force as dataframe
+res1<-as.data.frame(res1)
+
+# 1st column must be a name
+res1$name=rownames(res1)
+```
+
+#name columns
+
+```{r} 
+# rearrange columns
+res2=res1[,c(ncol(res1),1:(ncol(res1)-1))]
+names(res2) <- c("name", 
+"inBA1Substitution75.upset.txt"  ,  "inBA11Substitution75.upset.txt")
+
+#res2=res1[,c(ncol(res1),1:(ncol(res1)-1))]
+#names(res2) <- c("name", "inAY10Substitution75.upset.txt", "inAY11Substitution75.upset.txt",
+#"inAY12Substitution75.upset.txt",  "inAY13Substitution75.upset.txt", 
+ #"inAY14Substitution75.upset.txt",   "inAY15Substitution75.upset.txt", 
+ #"inAY1Substitution75.upset.txt" ,   "inAY20Substitution75.upset.txt", 
+ #"inAY23Substitution75.upset.txt",   "inAY24Substitution75.upset.txt", 
+ #"inAY25Substitution75.upset.txt",   "inAY26Substitution75.upset.txt", 
+ #"inAY27Substitution75.upset.txt",   "inAY2Substitution75.upset.txt",  
+ #"inAY39Substitution75.upset.txt",   
+ #"inAY3Substitution75.upset.txt", "inAY44Substitution75.upset.txt",  "inAY4dot2Substitution75.upset.txt",  #"inAY4Substitution75.upset.txt",  "inAY5Substitution75.upset.txt","inAY6Substitution75.upset.txt",  
+  #"inAY9Substitution75.upset.txt", "inDeltaSubstitution75.upset.txt"   ) 
+
+#res2=res1[,c(ncol(res1),1:(ncol(res1)-1))]
+#names(res2) <- c("name", "inAY10Substitution75", "inAY11Substitution75", "inAY12Substitution75", "inAY13Substitution75", "inAY14Substitution75", "inAY15Substitution75", "inAY1Substitution75", "inAY20Substitution75", "inAY23Substitution75", "inAY24Substitution75", "inAY25Substitution75", "inAY26Substitution75", "inAY27Substitution75", "inAY2Substitution75", "inAY3dot1Substitution75","inAY3Substitution75", "inAY4Substitution75", "inAY5Substitution75", "inAY6Substitution75", "inAY7dot1Substitution75", "inAY9Substitution75", "inDeltaSubstitution75") 
+```
+
+```{r upset plot, fig.align='center', echo=FALSE, out.width="100%" }
+#pdf("gene_intersections.pdf")
+#make the plot with 10 sets
+upset(res2,sets = c( "inBA1Substitution75.upset.txt"  ,  "inBA11Substitution75.upset.txt"))
+
+#upset(res2,sets = c(  "inAY10Substitution75.upset.txt"   , "inAY11Substitution75.upset.txt"  , 
+ #"inAY12Substitution75.upset.txt"  ,  "inAY13Substitution75.upset.txt"  , 
+ #"inAY14Substitution75.upset.txt" ,   "inAY15Substitution75.upset.txt"  , 
+ #"inAY1Substitution75.upset.txt"  ,   "inAY20Substitution75.upset.txt"  , 
+ #"inAY23Substitution75.upset.txt" ,   "inAY24Substitution75.upset.txt"  , 
+ #"inAY25Substitution75.upset.txt" ,   "inAY26Substitution75.upset.txt"  , 
+ #"inAY27Substitution75.upset.txt" ,   "inAY2Substitution75.upset.txt"  ,  
+ #"inAY39Substitution75.upset.txt" ,   
+ #"inAY3Substitution75.upset.txt" , "inAY44Substitution75.upset.txt",  "inAY4dot2Substitution75.upset.txt"   #,  "inAY4Substitution75.upset.txt"   , 
+ #"inAY5Substitution75.upset.txt" ,    "inAY6Substitution75.upset.txt"  ,  
+  #"inAY9Substitution75.upset.txt" ,   
+ #"inDeltaSubstitution75.upset.txt"   ))
+#write out matrix to csv
+write_excel_csv(res2, "~/Desktop/BAsubfam/ba-matrix-013122.csv")
+#dev.off()
+```
+
+## Upset plot Comments
+
+***
